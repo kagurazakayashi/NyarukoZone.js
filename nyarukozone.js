@@ -1,7 +1,7 @@
 // nyarukozone.js
 
 //可设定
-var nyarukozone_speed = 17;
+var nyarukozone_speed = 30;
 var nyarukozone_debug = true;
 var nyarukozone_isplay = true;
 
