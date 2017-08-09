@@ -106,10 +106,15 @@ function nyarukozone_play() {
 function nyarukozone_size() {
     return [nyarukozone_div.width(),nyarukozone_div.height()];
 }
+//调试输出
 function YSLog(log) {
     if (nyarukozone_consolelog && nyarukozone_logdiv) {
         var nowDate = new Date();
         var datestr = nowDate.toLocaleString();
         nyarukozone_logdiv.append("["+datestr+"] "+log+"<br>");
     }
+}
+//添加元素
+function addSpirit() {
+    
 }
