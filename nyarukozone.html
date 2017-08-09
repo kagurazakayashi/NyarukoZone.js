@@ -5,8 +5,8 @@
     <script type="text/javascript" src="resources/jquery.min.js"></script>
     <script type="text/javascript" src="resources/jquery.cookie.js"></script>
     <script src='nyarukozone/nyarukozone_core.js'></script>
-    <script src='nyarukozone/nyarukozone_tmap.js'></script>
-    <script src='nyarukozone/nyarukozone_demo.js'></script>
+    <script src='nyarukozone/nyarukozone_mapcol.js'></script>
+    <script src='nyarukozone/nyarukozone_game.js'></script>
     <style>
         body {
             background-color: #000;
@@ -30,12 +30,26 @@
             bottom: 10px;
             width: 100%;
             overflow: hidden;
+            z-index: 1;
+        }
+        #nyarukozone_log {
+            position: fixed;
+            right: 0px;
+            bottom: 30px;
+            background-color: rgba(0, 0, 0, 0.5);
+            width: 512px;
+            height: 200px;
+            overflow: auto;
+            z-index: 3;
         }
     </style>
 </head>
 <body>
     <div id="nyarukozone"></div>
-    <div id="nyarukozone_debug">Loading...</div>
-    <script>nyarukozone_init();</script>
+    <code>
+        <div id="nyarukozone_log">NyarukoZone - Log<hr></div>
+        <div id="nyarukozone_debug">Loading...</div>
+    </code>
+    <script>nyarukozone_init();game_start();</script>
 </body>
 </html>

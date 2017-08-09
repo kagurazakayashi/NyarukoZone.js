@@ -1,4 +1,5 @@
-// nyarukozone.js
+//nyarukozone.js
+//基本控制
 
 //可设定
 var nyarukozone_speed = 30;
@@ -11,6 +12,7 @@ var nyarukozone_secondframe = 0;
 var nyarukozone_oldframe = 0;
 var nyarukozone_fps = (1000 / nyarukozone_speed).toFixed(2);
 var nyarukozone_div = null;
+var nyarukozone_logdiv = null;
 var nyarukozone_debugdiv = null;
 var nyarukozone_mousemlocation_x = 0;
 var nyarukozone_mousemlocation_y = 0;
@@ -20,6 +22,7 @@ var nyarukozone_keyboard = new Array();
 
 function nyarukozone_init() {
     nyarukozone_div = $('#nyarukozone');
+    nyarukozone_logdiv = $("#nyarukozone_log");
     if (nyarukozone_debug) {
         nyarukozone_debugdiv = $("#nyarukozone_debug");
     }
@@ -88,14 +91,25 @@ function nyarukozone_frameupdate() {
         if (nyarukozone_mousemlocation_x < 0 || nyarukozone_mousemlocation_x > s_width || nyarukozone_mouseclocation_y < 0 || nyarukozone_mouseclocation_y > s_height) {
             s_mouse = "(界外)";
         }
-        nyarukozone_debugdiv.html("<code>　Nyarukozone ｜帧数："+s_frametotal+" ｜帧频："+nyarukozone_secondframe+" / "+nyarukozone_fps+" fps ｜对象数量："+s_spirit+" ｜场景尺寸："+s_width+" x "+s_height+" ｜鼠标位置："+s_mouse+" ｜点击位置："+nyarukozone_mouseclocation_x+" x "+nyarukozone_mouseclocation_y+" ｜当前按键："+s_key2+"</code>");
+        nyarukozone_debugdiv.html("　Nyarukozone ｜帧数："+s_frametotal+" ｜帧频："+nyarukozone_secondframe+" / "+nyarukozone_fps+" fps ｜对象数量："+s_spirit+" ｜场景尺寸："+s_width+" x "+s_height+" ｜鼠标位置："+s_mouse+" ｜点击位置："+nyarukozone_mouseclocation_x+" x "+nyarukozone_mouseclocation_y+" ｜当前按键："+s_key2);
     }
 }
-function pause() {
+function nyarukozone_pause() {
     nyarukozone_isplay = false;
     return "已暂停。";
 }
-function play() {
+function nyarukozone_play() {
     nyarukozone_isplay = true;
     return "继续运行。";
+}
+//获取舞台尺寸
+function nyarukozone_size() {
+    return [nyarukozone_div.width(),nyarukozone_div.height()];
+}
+function YSLog(log) {
+    if (nyarukozone_consolelog && nyarukozone_logdiv) {
+        var nowDate = new Date();
+        var datestr = nowDate.toLocaleString();
+        nyarukozone_logdiv.append("["+datestr+"] "+log+"<br>");
+    }
 }
