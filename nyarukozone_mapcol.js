@@ -7,6 +7,7 @@ var nyarukozone_mapimageall = 0;
 var nyarukozone_mapimagearrlen = [0,0];
 var nyarukozone_mapimagecache = [];
 var nyarukozone_mapinfo = null;
+var nyarukozone_mapsize = [];
 
 function nyarukozone_resetmap() {
     $(".nyarukozone_map").remove();
@@ -17,6 +18,7 @@ function nyarukozone_resetmap() {
     nyarukozone_mapimagearrlen = [0,0];
     nyarukozone_mapimagecache = [];
     nyarukozone_mapinfo = null;
+    nyarukozone_mapsize = [];
 }
 
 function nyarukozone_loadMap(url) {
@@ -32,7 +34,7 @@ function nyarukozone_loadMap(url) {
                 var json = xhr.responseJSON;
                 var info = json["info"];
                 if (info["filevar"] != 1) {
-                    YSLog("E: filevar");
+                    YSLog("E: mapfilevar");
                     return
                 }
                 nyarukozone_loadMapImage(url,json["background"],json["prospect"],json["collider"]);
@@ -54,6 +56,7 @@ function nyarukozone_loadMapImage(url,backgrounds,prospects,collider) {
     });
     nyarukozone_loadMapImage2(3,url,collider);
 }
+
 function nyarukozone_loadMapImage2(type,url,item) {
     var nowurl = url + "/" + item;
     YSLog("Loading: "+nowurl);
@@ -66,6 +69,7 @@ function nyarukozone_loadMapImage2(type,url,item) {
         }
     };
 }
+
 function nyarukozone_loadMapImage3() {
     var nowbackgrounds = [];
     var nowprospects = [];
@@ -85,15 +89,25 @@ function nyarukozone_loadMapImage3() {
     $.each(nowprospects, function(i, nimg) {
         nyarukozone_loadMapImage4(800000+i,nimg);
     });
-    //nyarukozone_loadMapImage4(900000,nowcollider);
-
-    YSLog("Load Map Img.");
+    YSLog("Load Map OK.");
 }
+
 function nyarukozone_loadMapImage4(z,img) {
+    if (nyarukozone_mapsize.length == 0) {
+        nyarukozone_mapsize = [img[0].width,img[0].height];
+        YSLog("Map Size: "+nyarukozone_mapsize[0]+" x "+nyarukozone_mapsize[1]);
+    }
     img.addClass("nyarukozone_spirit");
     img.addClass("nyarukozone_map");
     img.css({"z-index":z,"top":"0px","left":"0px"});
-    // var html = '<img class="nyarukozone_spirit nyarukozone_map" style="top:0px;left:0px;" src="'+img+'">';
-    // nyarukozone_div.append(html);
     nyarukozone_div.append(img);
+}
+
+function nyarukozone_mapmove(x,y) {
+    var windoww = nyarukozone_div.width() / 2;
+    var windowh = nyarukozone_div.height() / 2;
+    var nmbool = array();
+    nmbool[0] = x - windoww;
+    nmbool[1] = y - windowh;
+    return nmbool;
 }
