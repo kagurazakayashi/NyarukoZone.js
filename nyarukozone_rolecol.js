@@ -48,7 +48,7 @@ function nyarukozone_addRole(json,css,id,uid) {
     var classname = 'nyarukozone_'+json["info"]["id"]+"_"+json["stand@1x"]["a"][0];
     var z = 300000 + (zi++);
     var idname = "sprite"+z;
-    var rolediv = '<div class="'+classname+' sprite" id="'+idname+'" ani="'+uid+'_'+json["info"]["id"]+'_stand_s_0"></div>';
+    var rolediv = '<div class="'+classname+' sprite" id="'+idname+'" ani="'+uid+'_'+json["info"]["id"]+'_stand_s_0" frame="100_100"></div>';
     nyarukozone_div.append(rolediv);
     var nowclass = $("."+classname);
     nowclass.css({"z-index":z,"top":"0px","left":"0px","position":"absolute"});
@@ -56,6 +56,7 @@ function nyarukozone_addRole(json,css,id,uid) {
 }
 
 function nyarukozone_frameupdate_role() {
+    nyarukozone_selfroledir();
     nyarukozone_rolespeed_anii++;
     if (nyarukozone_rolespeed_anii < nyarukozone_rolespeed_ani) {
         return;
@@ -63,21 +64,77 @@ function nyarukozone_frameupdate_role() {
     nyarukozone_rolespeed_anii = 0;
     for (var i in nyarukozone_roledivs) {
         var nowdiv = $("#"+nyarukozone_roledivs[i]);
-        //.split(',');
-        var nowstat = nowdiv.attr("ani").split('_');
-        var nowuid = nowstat[0];
-        var nowid = nowstat[1];
-        var nowact = nowstat[2];
-        var nowdir = nowstat[3];
-        var newani = parseInt(nowstat[4]) + 1;
-        if (newani >= nyarukozone_roles[nowuid][nowact+"@1x"][nowdir].length) {
-            newani = 0;
-        }
-        // console.log(nyarukozone_roles[nowuid][nowact+"@1x"][nowdir][newani]);
-        var newclass = 'nyarukozone_'+nowid+"_"+nyarukozone_roles[nowuid][nowact+"@1x"][nowdir][newani]+' sprite';
-        var newani = nowuid+"_"+nowid+"_"+nowact+"_"+nowdir+"_"+newani;
-        nowdiv.attr({"ani":newani,"class":newclass});
+        nyarukozone_newroleclass(nowdiv,"");
     }
+    //nyarukozone_keyboard
+}
+function nyarukozone_newroleclass(nowdiv,nowroledir) {
+    var nowstat = nowdiv.attr("ani").split('_');
+    var nowuid = nowstat[0];
+    var nowid = nowstat[1];
+    var nowact = nowstat[2];
+    var nowdir = nowstat[3];
+    if (nowroledir.length > 2) {
+        nowact = "stand";
+    } else if (nowroledir != "") {
+        nowdir = nowroledir;
+        nowact = "walk";
+    }
+    var newani = parseInt(nowstat[4]) + 1;
+    if (newani >= nyarukozone_roles[nowuid][nowact+"@1x"][nowdir].length) {
+        newani = 0;
+    }
+    if (nowroledir == "") {
+        var newclass = 'nyarukozone_'+nowid+"_"+nyarukozone_roles[nowuid][nowact+"@1x"][nowdir][newani]+' sprite';
+    }
+    var newani = nowuid+"_"+nowid+"_"+nowact+"_"+nowdir+"_"+newani;
+    var frame = nowdiv.attr("frame").split('_');
+    var newframe = nyarukozone_zerotocenter(frame[0],frame[1],nowdiv.width(),nowdiv.height());
+    nowdiv.css({"left":newframe[0],"top":newframe[1]});
+    nowdiv.attr({"ani":newani,"class":newclass});
+}
+function nyarukozone_zerotocenter(x,y,w,h) {
+    var nx = x - w * 0.5;
+    var ny = y - h * 0.5;
+    return [nx,ny];
+}
+function nyarukozone_selfroledir() {
+    var selfdiv = $("#sprite300000");
+    var nowkeys = nyarukozone_keyboard;
+    var nowroledir = "";
+    if (nowkeys.length < 1 || nowkeys.length > 2) {
+        nowroledir = "null";
+    }
+    for (i in nowkeys) {
+        var nowkey = nowkeys[i];
+        if (nowkey == 87 || nowkey == 38) {
+            nowroledir += "w";
+        } else if (nowkey == 83 || nowkey == 40) {
+            nowroledir += "s";
+        } else if (nowkey == 65 || nowkey == 37) {
+            nowroledir += "a";
+        } else if (nowkey == 68 || nowkey == 39) {
+            nowroledir += "d";
+        } else {
+            nowroledir = "null";
+        }
+    }
+    if (nowroledir == "ws" || nowroledir == "ad" || nowroledir == "sw" || nowroledir == "da") {
+        nowroledir = "null";
+    }
+    nyarukozone_newroleclass(selfdiv,nyarukozone_keysort(nowroledir));
+}
+function nyarukozone_keysort(key) {
+    if (key == "aw") {
+        return "wa";
+    } else if (key == "dw") {
+        return "wd";
+    } else if (key == "as") {
+        return "sa";
+    } else if (key == "ds") {
+        return "sd";
+    }
+    return key;
 }
 
 function nyarukozone_contains(arr, obj) {
