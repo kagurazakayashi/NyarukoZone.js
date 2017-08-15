@@ -72,27 +72,31 @@ function nyarukozone_frameupdate() {
         return;
     }
     if (nyarukozone_debug) {
-        var s_frametotal = nyarukozone_frametotal++;
-        var s_spirit = nyarukozone_div.children().length;
-        var s_width = nyarukozone_div.width();
-        var s_height = nyarukozone_div.height();
-        var s_key = new Array(); //nyarukozone_keyboard.join("+");
-        for (i in nyarukozone_keyboard) {
-            var nowkey = nyarukozone_keyboard[i];
-            var nowkeyid = "("+nowkey+")";
-            if (nowkey >= 49 && nowkey <= 90) {
-                s_key[i] = String.fromCharCode(nowkey)+nowkeyid;
-            } else {
-                s_key[i] = nowkeyid;
-            }
-        }
-        var s_key2 = s_key.join(" + ");
-        var s_mouse = nyarukozone_mousemlocation_x+" x "+nyarukozone_mousemlocation_y;
-        if (nyarukozone_mousemlocation_x < 0 || nyarukozone_mousemlocation_x > s_width || nyarukozone_mouseclocation_y < 0 || nyarukozone_mouseclocation_y > s_height) {
-            s_mouse = "(界外)";
-        }
-        nyarukozone_debugdiv.html("　Nyarukozone ｜帧数："+s_frametotal+" ｜帧频："+nyarukozone_secondframe+" / "+nyarukozone_fps+" fps ｜对象数量："+s_spirit+" ｜场景尺寸："+s_width+" x "+s_height+" ｜鼠标位置："+s_mouse+" ｜点击位置："+nyarukozone_mouseclocation_x+" x "+nyarukozone_mouseclocation_y+" ｜当前按键："+s_key2);
+        nyarukozone_framedebug();
     }
+    nyarukozone_frameupdate_role();
+}
+function nyarukozone_framedebug() {
+    var s_frametotal = nyarukozone_frametotal++;
+    var s_spirit = nyarukozone_div.children().length;
+    var s_width = nyarukozone_div.width();
+    var s_height = nyarukozone_div.height();
+    var s_key = new Array(); //nyarukozone_keyboard.join("+");
+    for (i in nyarukozone_keyboard) {
+        var nowkey = nyarukozone_keyboard[i];
+        var nowkeyid = "("+nowkey+")";
+        if (nowkey >= 49 && nowkey <= 90) {
+            s_key[i] = String.fromCharCode(nowkey)+nowkeyid;
+        } else {
+            s_key[i] = nowkeyid;
+        }
+    }
+    var s_key2 = s_key.join(" + ");
+    var s_mouse = nyarukozone_mousemlocation_x+" x "+nyarukozone_mousemlocation_y;
+    if (nyarukozone_mousemlocation_x < 0 || nyarukozone_mousemlocation_x > s_width || nyarukozone_mouseclocation_y < 0 || nyarukozone_mouseclocation_y > s_height) {
+        s_mouse = "(界外)";
+    }
+    nyarukozone_debugdiv.html("　Nyarukozone ｜帧数："+s_frametotal+" ｜帧频："+nyarukozone_secondframe+" / "+nyarukozone_fps+" fps ｜对象数量："+s_spirit+" ｜场景尺寸："+s_width+" x "+s_height+" ｜鼠标位置："+s_mouse+" ｜点击位置："+nyarukozone_mouseclocation_x+" x "+nyarukozone_mouseclocation_y+" ｜当前按键："+s_key2);
 }
 function nyarukozone_pause() {
     nyarukozone_isplay = false;
