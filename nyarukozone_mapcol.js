@@ -75,22 +75,22 @@ function nyarukozone_loadMapImage2(type,url,item) {
 }
 //設定圖片z軸
 function nyarukozone_loadMapImage3() {
-    var nowbackgrounds = [];
-    var nowprospects = [];
+    // var nyarukozone_mapbackgrounds = [];
+    // var nyarukozone_mapprospects = [];
     var nowcollider = null;
     $.each(nyarukozone_mapimagecache, function(i, nowimginfo) {
         if (nowimginfo[0] == 1) {
-            nowbackgrounds[nowbackgrounds.length] = nowimginfo[1];
+            nyarukozone_mapbackgrounds[nyarukozone_mapbackgrounds.length] = nowimginfo[1];
         } else if (nowimginfo[0] == 2) {
-            nowprospects[nowprospects.length] = nowimginfo[1];
+            nyarukozone_mapprospects[nyarukozone_mapprospects.length] = nowimginfo[1];
         } else if (nowimginfo[0] == 3) {
             nowcollider = nowimginfo[1];
         }
     });
-    $.each(nowbackgrounds, function(i, nimg) {
+    $.each(nyarukozone_mapbackgrounds, function(i, nimg) {
         nyarukozone_loadMapImage4(100000+i,nimg);
     });
-    $.each(nowprospects, function(i, nimg) {
+    $.each(nyarukozone_mapprospects, function(i, nimg) {
         nyarukozone_loadMapImage4(600000+i,nimg);
     });
     YSLog("Load Map OK.");
@@ -111,8 +111,33 @@ function nyarukozone_loadMapImage4(z,img) {
 function nyarukozone_mapmove(x,y) {
     var windoww = nyarukozone_div.width() / 2;
     var windowh = nyarukozone_div.height() / 2;
-    var nmbool = [];
-    nmbool[0] = x - windoww;
-    nmbool[1] = y - windowh;
+    var mx = windoww - x;
+    var mxx = nyarukozone_div.width() - nyarukozone_mapsize[0];
+    var my = windowh - y;
+    var myy = nyarukozone_div.height() - nyarukozone_mapsize[1];
+    var rolex = windoww;
+    var roley = windowh;
+    
+    if (mx > 0) {
+        mx = 0;
+        rolex = x;
+    } else if (mx < mxx) {
+        mx = mxx;
+        rolex = nyarukozone_div.width() - (nyarukozone_mapsize[0] - x);
+    }
+    if (my > 0) {
+        my = 0;
+        roley = y;
+    } else if (my < myy) {
+        my = myy;
+        roley = nyarukozone_div.height() - (nyarukozone_mapsize[1] - y);
+    }
+    $.each(nyarukozone_mapbackgrounds, function(i) {
+        nyarukozone_mapbackgrounds[i].css({"top":my+"px","left":mx+"px"});
+    });
+    $.each(nyarukozone_mapprospects, function(i) {
+        nyarukozone_mapprospects[i].css({"top":my+"px","left":mx+"px"});
+    });
+    var nmbool = [rolex,roley];
     return nmbool;
 }

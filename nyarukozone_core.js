@@ -128,3 +128,13 @@ function YSLog(log) {
 function addSpirit() {
     
 }
+//檢查數組是否包含某元素
+function nyarukozone_contains(arr, obj) {
+  var i = arr.length;
+  while (i--) {
+    if (arr[i] === obj) {
+      return true;
+    }
+  }
+  return false;
+}

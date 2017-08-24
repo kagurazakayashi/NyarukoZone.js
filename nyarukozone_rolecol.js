@@ -82,6 +82,9 @@ function nyarukozone_frameupdate_role() {
 
 //顯示角色到場景
 function nyarukozone_newroleclass(nowdiv,nowroledir) {
+    if (!nowdiv) {
+        YSLog("E: No Rolediv");
+    }
     var nowstat = nowdiv.attr("ani").split('_');
     var nowuid = nowstat[0];
     var nowid = nowstat[1];
@@ -104,7 +107,9 @@ function nyarukozone_newroleclass(nowdiv,nowroledir) {
     var frame = nowdiv.attr("frame").split('_'); //[0,0];
     nowdiv.attr({"ani":newani,"class":newclass});
     var newframe = nyarukozone_zerotocenter(frame[0],frame[1],nowdiv.width(),nowdiv.height());
-    nowdiv.css({"left":newframe[0],"top":newframe[1]});
+    var eframe = nyarukozone_mapmove(newframe[0],newframe[1]);
+    // var nframe = [newframe[0]-eframe[0],newframe[1]-eframe[1]];
+    nowdiv.css({"left":eframe[0],"top":eframe[1]});
 }
 
 //獲取中心點
@@ -118,7 +123,7 @@ function nyarukozone_zerotocenter(x,y,w,h) {
     return [nx,ny];
 }
 
-//玩家角色
+//玩家角色響應方向鍵
 function nyarukozone_selfroledir() {
     var selfdiv = $("#sprite300000");
     var nowkeys = nyarukozone_keyboard;
@@ -145,6 +150,7 @@ function nyarukozone_selfroledir() {
     }
     nyarukozone_newroleclass(selfdiv,nyarukozone_keysort(nowroledir));
 }
+//修正方向鍵值
 function nyarukozone_keysort(key) {
     if (key == "aw") {
         return "wa";
@@ -156,14 +162,4 @@ function nyarukozone_keysort(key) {
         return "sd";
     }
     return key;
-}
-
-function nyarukozone_contains(arr, obj) {
-  var i = arr.length;
-  while (i--) {
-    if (arr[i] === obj) {
-      return true;
-    }
-  }
-  return false;
 }
