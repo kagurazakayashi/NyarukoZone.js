@@ -1,5 +1,5 @@
 //nyarukozone.js
-//角色控制
+//角色控制器
 var nyarukozone_roles = [];
 var nyarukozone_rolesid = [];
 var nyarukozone_roledivs = [];
@@ -7,10 +7,12 @@ var zi = 0;
 var nyarukozone_rolespeed_ani = 10;
 var nyarukozone_rolespeed_anii = 0;
 
+//清除當前場景所有角色
 function nyarukozone_resetrole() {
 
 }
 
+//裝入一個角色
 function nyarukozone_loadRole(url,uid) {
     var jsonurl = url + "/index.json";
     YSLog("Loading: "+jsonurl);
@@ -36,6 +38,7 @@ function nyarukozone_loadRole(url,uid) {
     }
 }
 
+//添加角色到場景
 function nyarukozone_addRole(json,css,id,uid) {
     if (nyarukozone_roles[uid]) {
         YSLog("E: Role uid");
@@ -46,9 +49,10 @@ function nyarukozone_addRole(json,css,id,uid) {
         loadjscssfile(css,"css");
     }
     var classname = 'nyarukozone_'+json["info"]["id"]+"_"+json["stand@1x"]["a"][0];
-    var z = 300000 + (zi++);
+    var z = 300000 + zi;
+    zi+=10;
     var idname = "sprite"+z;
-    var framestr = "-256_-256";
+    var framestr = "-1000_-1000";
     if (nyarukozone_mapinfo) {
         var door = nyarukozone_mapinfo["door"];
         var doorDefault = door[door["default"]];
@@ -61,6 +65,7 @@ function nyarukozone_addRole(json,css,id,uid) {
     nyarukozone_roledivs[nyarukozone_roledivs.length] = idname;
 }
 
+//角色每幀更新，根據設定的延遲做動畫。
 function nyarukozone_frameupdate_role() {
     nyarukozone_selfroledir();
     nyarukozone_rolespeed_anii++;
@@ -69,11 +74,13 @@ function nyarukozone_frameupdate_role() {
     }
     nyarukozone_rolespeed_anii = 0;
     for (var i in nyarukozone_roledivs) {
-        var nowdiv = $("#"+nyarukozone_roledivs[i]);
+        var nowdiv = $("#"+nyarukozone_roledivs[i*10]);
         nyarukozone_newroleclass(nowdiv,"");
     }
     //nyarukozone_keyboard
 }
+
+//顯示角色到場景
 function nyarukozone_newroleclass(nowdiv,nowroledir) {
     var nowstat = nowdiv.attr("ani").split('_');
     var nowuid = nowstat[0];
@@ -99,6 +106,8 @@ function nyarukozone_newroleclass(nowdiv,nowroledir) {
     var newframe = nyarukozone_zerotocenter(frame[0],frame[1],nowdiv.width(),nowdiv.height());
     nowdiv.css({"left":newframe[0],"top":newframe[1]});
 }
+
+//獲取中心點
 function nyarukozone_zerotocenter(x,y,w,h) {
     var x = parseFloat(x);
     var y = parseFloat(y);
@@ -108,6 +117,8 @@ function nyarukozone_zerotocenter(x,y,w,h) {
     var ny = y - (h * 0.5);
     return [nx,ny];
 }
+
+//玩家角色
 function nyarukozone_selfroledir() {
     var selfdiv = $("#sprite300000");
     var nowkeys = nyarukozone_keyboard;

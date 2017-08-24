@@ -1,5 +1,5 @@
 //nyarukozone.js
-//地图控制
+//場景控制器
 var nyarukozone_mapbackgrounds = [];
 var nyarukozone_mapprospects = [];
 var nyarukozone_collider = "";
@@ -9,6 +9,7 @@ var nyarukozone_mapimagecache = [];
 var nyarukozone_mapinfo = null;
 var nyarukozone_mapsize = [];
 
+//清除當前場景
 function nyarukozone_resetmap() {
     $(".nyarukozone_map").remove();
     nyarukozone_mapbackgrounds = [];
@@ -21,6 +22,7 @@ function nyarukozone_resetmap() {
     nyarukozone_mapsize = [];
 }
 
+//裝入一個場景
 function nyarukozone_loadMap(url) {
     nyarukozone_resetmap();
     var jsonurl = url + "/index.json";
@@ -45,6 +47,8 @@ function nyarukozone_loadMap(url) {
         YSLog("E: Data loading failed: "+ex);
     }
 }
+
+//裝入場景圖片設定
 function nyarukozone_loadMapImage(url,backgrounds,prospects,collider) {
     nyarukozone_mapimagearrlen = [backgrounds.length,prospects.length];
     nyarukozone_mapimageall = nyarukozone_mapimagearrlen[0] + nyarukozone_mapimagearrlen[1] + 1;
@@ -56,7 +60,7 @@ function nyarukozone_loadMapImage(url,backgrounds,prospects,collider) {
     });
     nyarukozone_loadMapImage2(3,url,collider);
 }
-
+//下載場景圖片
 function nyarukozone_loadMapImage2(type,url,item) {
     var nowurl = url + "/" + item;
     YSLog("Loading: "+nowurl);
@@ -69,7 +73,7 @@ function nyarukozone_loadMapImage2(type,url,item) {
         }
     };
 }
-
+//設定圖片z軸
 function nyarukozone_loadMapImage3() {
     var nowbackgrounds = [];
     var nowprospects = [];
@@ -87,11 +91,11 @@ function nyarukozone_loadMapImage3() {
         nyarukozone_loadMapImage4(100000+i,nimg);
     });
     $.each(nowprospects, function(i, nimg) {
-        nyarukozone_loadMapImage4(800000+i,nimg);
+        nyarukozone_loadMapImage4(600000+i,nimg);
     });
     YSLog("Load Map OK.");
 }
-
+//呈現場景
 function nyarukozone_loadMapImage4(z,img) {
     if (nyarukozone_mapsize.length == 0) {
         nyarukozone_mapsize = [img[0].width,img[0].height];
@@ -103,10 +107,11 @@ function nyarukozone_loadMapImage4(z,img) {
     nyarukozone_div.append(img);
 }
 
+//演算地圖移動位置，防止超出。返回負數用角色移動補償。
 function nyarukozone_mapmove(x,y) {
     var windoww = nyarukozone_div.width() / 2;
     var windowh = nyarukozone_div.height() / 2;
-    var nmbool = array();
+    var nmbool = [];
     nmbool[0] = x - windoww;
     nmbool[1] = y - windowh;
     return nmbool;

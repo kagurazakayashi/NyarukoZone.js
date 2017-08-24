@@ -1,12 +1,12 @@
 //nyarukozone.js
-//基本控制
+//基礎核心
 
-//可设定
+//可設定
 var nyarukozone_speed = 30;
 var nyarukozone_debug = true;
 var nyarukozone_isplay = true;
 
-//不可设定
+//不可設定
 var nyarukozone_frametotal = 0;
 var nyarukozone_secondframe = 0;
 var nyarukozone_oldframe = 0;
@@ -20,6 +20,7 @@ var nyarukozone_mouseclocation_x = 0;
 var nyarukozone_mouseclocation_y = 0;
 var nyarukozone_keyboard = new Array();
 
+//初期化核心程式
 function nyarukozone_init() {
     nyarukozone_div = $('#nyarukozone');
     nyarukozone_logdiv = $("#nyarukozone_log");
@@ -58,6 +59,7 @@ function nyarukozone_init() {
     window.setInterval(nyarukozone_frameupdate,nyarukozone_speed);
     window.setInterval(nyarukozone_secondupdate,1000);
 }
+//每秒更新發生器
 function nyarukozone_secondupdate() {
     if (!nyarukozone_isplay) {
         return;
@@ -67,6 +69,7 @@ function nyarukozone_secondupdate() {
         nyarukozone_oldframe = nyarukozone_frametotal;
     }
 }
+//每幀更新發生器
 function nyarukozone_frameupdate() {
     if (!nyarukozone_isplay) {
         return;
@@ -76,6 +79,7 @@ function nyarukozone_frameupdate() {
     }
     nyarukozone_frameupdate_role();
 }
+//顯示調試訊息
 function nyarukozone_framedebug() {
     var s_frametotal = nyarukozone_frametotal++;
     var s_spirit = nyarukozone_div.children().length;
@@ -98,10 +102,12 @@ function nyarukozone_framedebug() {
     }
     nyarukozone_debugdiv.html("　Nyarukozone ｜帧数："+s_frametotal+" ｜帧频："+nyarukozone_secondframe+" / "+nyarukozone_fps+" fps ｜对象数量："+s_spirit+" ｜场景尺寸："+s_width+" x "+s_height+" ｜鼠标位置："+s_mouse+" ｜点击位置："+nyarukozone_mouseclocation_x+" x "+nyarukozone_mouseclocation_y+" ｜当前按键："+s_key2);
 }
+//暫停程式
 function nyarukozone_pause() {
     nyarukozone_isplay = false;
     return "已暂停。";
 }
+//繼續程式
 function nyarukozone_play() {
     nyarukozone_isplay = true;
     return "继续运行。";
