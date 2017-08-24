@@ -6,6 +6,9 @@ var nyarukozone_roledivs = [];
 var zi = 0;
 var nyarukozone_rolespeed_ani = 10;
 var nyarukozone_rolespeed_anii = 0;
+var nyarukozone_selfmovespeedx = 3;
+// var nyarukozone_selfmovespeed = 1;
+// var nyarukozone_selfmovespeedi = 0;
 
 //清除當前場景所有角色
 function nyarukozone_resetrole() {
@@ -60,6 +63,7 @@ function nyarukozone_addRole(json,css,id,uid) {
     }
     var rolediv = '<div class="'+classname+' sprite" id="'+idname+'" ani="'+uid+'_'+json["info"]["id"]+'_stand_s_0" frame="'+framestr+'"></div>';
     nyarukozone_div.append(rolediv);
+    YSLog("Loading: "+classname);
     var nowclass = $("."+classname);
     nowclass.css({"z-index":z,"top":"0px","left":"0px","position":"absolute"});
     nyarukozone_roledivs[nyarukozone_roledivs.length] = idname;
@@ -74,16 +78,17 @@ function nyarukozone_frameupdate_role() {
     }
     nyarukozone_rolespeed_anii = 0;
     for (var i in nyarukozone_roledivs) {
-        var nowdiv = $("#"+nyarukozone_roledivs[i*10]);
-        nyarukozone_newroleclass(nowdiv,"");
+        nyarukozone_newroleclass("#"+nyarukozone_roledivs[i],"");
     }
     //nyarukozone_keyboard
 }
 
 //顯示角色到場景
-function nyarukozone_newroleclass(nowdiv,nowroledir) {
-    if (!nowdiv) {
-        YSLog("E: No Rolediv");
+function nyarukozone_newroleclass(divid,nowroledir) {
+    var nowdiv = $(divid);
+    if (!nowdiv.attr("ani")) {
+        YSLog("E: No Rolediv: "+divid);
+        nyarukozone_pause();
     }
     var nowstat = nowdiv.attr("ani").split('_');
     var nowuid = nowstat[0];
@@ -107,9 +112,60 @@ function nyarukozone_newroleclass(nowdiv,nowroledir) {
     var frame = nowdiv.attr("frame").split('_'); //[0,0];
     nowdiv.attr({"ani":newani,"class":newclass});
     var newframe = nyarukozone_zerotocenter(frame[0],frame[1],nowdiv.width(),nowdiv.height());
+    //move
     var eframe = nyarukozone_mapmove(newframe[0],newframe[1]);
-    // var nframe = [newframe[0]-eframe[0],newframe[1]-eframe[1]];
     nowdiv.css({"left":eframe[0],"top":eframe[1]});
+}
+
+//移動位置
+function nyarukozone_rolemove(nowdiv,key) {
+    // nyarukozone_selfmovespeedi++;
+    // if (nyarukozone_selfmovespeedi < nyarukozone_selfmovespeed) {
+    //     return;
+    // }
+    // nyarukozone_selfmovespeedi = 0;
+    // var x = nowdiv.css("left");
+    // var y = nowdiv.css("top");
+    // x = parseFloat(x.substring(0,x.length-2))+1.0;
+    // y = parseFloat(y.substring(0,y.length-2))+1.0;
+    // nowdiv.css({"left":x,"top":y});
+    var frame = nowdiv.attr("frame").split('_');
+    var x = parseFloat(frame[0]);
+    var y = parseFloat(frame[1]);
+    switch (key) {
+        case "w":
+            y-=nyarukozone_selfmovespeedx;
+            break;
+        case "s":
+            y+=nyarukozone_selfmovespeedx;
+            break;
+        case "a":
+            x-=nyarukozone_selfmovespeedx;
+            break;
+        case "d":
+            x+=nyarukozone_selfmovespeedx;
+            break;
+        case "wa":
+            y-=nyarukozone_selfmovespeedx;
+            x-=nyarukozone_selfmovespeedx;
+            break;
+        case "wd":
+            y-=nyarukozone_selfmovespeedx;
+            x+=nyarukozone_selfmovespeedx;
+            break;
+        case "sa":
+            y+=nyarukozone_selfmovespeedx;
+            x-=nyarukozone_selfmovespeedx;
+            break;
+        case "sd":
+            y+=nyarukozone_selfmovespeedx;
+            x+=nyarukozone_selfmovespeedx;
+            break;
+        default:
+            break;
+    }
+    nowdiv.attr({"frame":x+"_"+y});
+    // nowdiv.css({"left":eframe[0],"top":eframe[1]});
 }
 
 //獲取中心點
@@ -148,7 +204,9 @@ function nyarukozone_selfroledir() {
     if (nowroledir == "ws" || nowroledir == "ad" || nowroledir == "sw" || nowroledir == "da") {
         nowroledir = "null";
     }
-    nyarukozone_newroleclass(selfdiv,nyarukozone_keysort(nowroledir));
+    nowroledir = nyarukozone_keysort(nowroledir);
+    nyarukozone_rolemove(selfdiv,nowroledir);
+    nyarukozone_newroleclass(selfdiv,nowroledir);
 }
 //修正方向鍵值
 function nyarukozone_keysort(key) {
