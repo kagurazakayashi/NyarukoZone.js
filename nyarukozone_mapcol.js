@@ -31,13 +31,13 @@ function nyarukozone_loadMap(url) {
                 YSLog("E: Download configuration failed. "+xhr.status+": "+xhr.statusText);
             }
             if(statusTxt == "success") {
-                var json = xhr.responseJSON;
-                var info = json["info"];
+                nyarukozone_mapinfo = xhr.responseJSON;
+                var info = nyarukozone_mapinfo["info"];
                 if (info["filevar"] != 1) {
                     YSLog("E: mapfilevar");
                     return
                 }
-                nyarukozone_loadMapImage(url,json["background"],json["prospect"],json["collider"]);
+                nyarukozone_loadMapImage(url,nyarukozone_mapinfo["background"],nyarukozone_mapinfo["prospect"],nyarukozone_mapinfo["collider"]);
                 YSLog("Load Map Config: " + info["name"]);
             }
         });

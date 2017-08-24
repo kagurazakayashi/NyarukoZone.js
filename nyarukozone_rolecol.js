@@ -48,7 +48,13 @@ function nyarukozone_addRole(json,css,id,uid) {
     var classname = 'nyarukozone_'+json["info"]["id"]+"_"+json["stand@1x"]["a"][0];
     var z = 300000 + (zi++);
     var idname = "sprite"+z;
-    var rolediv = '<div class="'+classname+' sprite" id="'+idname+'" ani="'+uid+'_'+json["info"]["id"]+'_stand_s_0" frame="100_100"></div>';
+    var framestr = "-256_-256";
+    if (nyarukozone_mapinfo) {
+        var door = nyarukozone_mapinfo["door"];
+        var doorDefault = door[door["default"]];
+        framestr = doorDefault.join("_");
+    }
+    var rolediv = '<div class="'+classname+' sprite" id="'+idname+'" ani="'+uid+'_'+json["info"]["id"]+'_stand_s_0" frame="'+framestr+'"></div>';
     nyarukozone_div.append(rolediv);
     var nowclass = $("."+classname);
     nowclass.css({"z-index":z,"top":"0px","left":"0px","position":"absolute"});
@@ -88,14 +94,18 @@ function nyarukozone_newroleclass(nowdiv,nowroledir) {
         var newclass = 'nyarukozone_'+nowid+"_"+nyarukozone_roles[nowuid][nowact+"@1x"][nowdir][newani]+' sprite';
     }
     var newani = nowuid+"_"+nowid+"_"+nowact+"_"+nowdir+"_"+newani;
-    var frame = nowdiv.attr("frame").split('_');
+    var frame = nowdiv.attr("frame").split('_'); //[0,0];
+    nowdiv.attr({"ani":newani,"class":newclass});
     var newframe = nyarukozone_zerotocenter(frame[0],frame[1],nowdiv.width(),nowdiv.height());
     nowdiv.css({"left":newframe[0],"top":newframe[1]});
-    nowdiv.attr({"ani":newani,"class":newclass});
 }
 function nyarukozone_zerotocenter(x,y,w,h) {
-    var nx = x - w * 0.5;
-    var ny = y - h * 0.5;
+    var x = parseFloat(x);
+    var y = parseFloat(y);
+    var w = parseFloat(w);
+    var h = parseFloat(h);
+    var nx = x - (w * 0.5);
+    var ny = y - (h * 0.5);
     return [nx,ny];
 }
 function nyarukozone_selfroledir() {
