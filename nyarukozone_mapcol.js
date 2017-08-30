@@ -98,7 +98,7 @@ function nyarukozone_loadMapImage3() {
 }
 //轉換碰撞圖片
 function nyarukozone_loadEcollider(nowcolliderimg) {
-    nyarukozone_div.append('<canvas class="nyarukozone_ecollider" id="nyarukozone_ecollider">ERROR</canvas>');
+    nyarukozone_div.append('<canvas class="nyarukozone_ecollider" id="nyarukozone_ecollider" width="'+nyarukozone_mapsize[0]+'px" height="'+nyarukozone_mapsize[1]+'px" style="z-index:100000">ERROR</canvas>');
     var ctxt = nyarukozone_ecollider.getContext('2d');
     var icollider = new Image;
     icollider.onload = function(){
@@ -110,21 +110,27 @@ function nyarukozone_loadEcollider(nowcolliderimg) {
         var widthi = 0;
         var heighti = 0;
         var widths = [];
+        var truei = 0;
+        var falsei = 0;
         for(var i =0,len = data.length; i<len;i+=4){
             //var red = data[i], green = data[i+1], blue = data[i+2], alpha = data[i+3];
-            var nc = 0;
-            if (data[i+3] > 0) {
-                nc = 1;
+            var nc = false;
+            if (data[i] > 0) {
+                nc = true;
+                truei++;
+            } else {
+                falsei++;
             }
             widths[widthi] = nc;
             widthi++;
             if (widthi >= icolliderwidth) {
                 widthi = 0;
-                nyarukozone_collider[heighti] = widths;
-                widths = [];
+                nyarukozone_collider[heighti] = widths.slice(0,widths.length);
+                widths.splice(0,widths.length);
                 heighti++;
             }
         }
+        YSLog("Load Ecollider OK. PASS="+falsei+", NO="+truei);
         $(".nyarukozone_ecollider").remove();
         icollider = null;
         ctxt = null;
@@ -135,7 +141,7 @@ function nyarukozone_loadEcollider(nowcolliderimg) {
 function nyarukozone_loadMapImage4(z,img) {
     if (nyarukozone_mapsize.length == 0) {
         nyarukozone_mapsize = [img[0].width,img[0].height];
-        YSLog("Map Size: "+nyarukozone_mapsize[0]+" x "+nyarukozone_mapsize[1]);
+        YSLog("Map Size: "+nyarukozone_mapsize[0]+" x "+nyarukozone_mapsize[1]+" = "+(nyarukozone_mapsize[0]*nyarukozone_mapsize[1]));
     }
     img.addClass("nyarukozone_spirit");
     img.addClass("nyarukozone_map");

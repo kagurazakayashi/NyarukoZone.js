@@ -129,6 +129,9 @@ function nyarukozone_rolemove(nowdiv,key) {
     // x = parseFloat(x.substring(0,x.length-2))+1.0;
     // y = parseFloat(y.substring(0,y.length-2))+1.0;
     // nowdiv.css({"left":x,"top":y});
+    if (nowdiv.attr("frame") == undefined) {
+        YSLog("E: No nowdiv.");
+    }
     var frame = nowdiv.attr("frame").split('_');
     var x = parseFloat(frame[0]);
     var y = parseFloat(frame[1]);
@@ -164,8 +167,9 @@ function nyarukozone_rolemove(nowdiv,key) {
         default:
             break;
     }
-    nowdiv.attr({"frame":x+"_"+y});
-    // nowdiv.css({"left":eframe[0],"top":eframe[1]});
+    if (nyarukozone_collider[y] != undefined && nyarukozone_collider[y][x] != undefined && nyarukozone_collider[y][x] == true) {
+        nowdiv.attr({"frame":x+"_"+y});
+    }
 }
 
 //獲取中心點
