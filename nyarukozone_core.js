@@ -19,6 +19,7 @@ var nyarukozone_mousemlocation_y = 0;
 var nyarukozone_mouseclocation_x = 0;
 var nyarukozone_mouseclocation_y = 0;
 var nyarukozone_keyboard = new Array();
+var nyarukozone_click_delegate = [];
 
 //初期化核心程式
 function nyarukozone_init() {
@@ -27,13 +28,15 @@ function nyarukozone_init() {
     if (nyarukozone_debug) {
         nyarukozone_debugdiv = $("#nyarukozone_debug");
     }
-    nyarukozone_div.mousemove(function(e) {  
-        nyarukozone_mousemlocation_x = e.offsetX;
-        nyarukozone_mousemlocation_y = e.offsetY;
+    nyarukozone_div.mousemove(function(e) {
+        nyarukozone_mousemlocation_x = e.clientX - parseInt(nyarukozone_div.css("left"));
+        nyarukozone_mousemlocation_y = e.clientY - parseInt(nyarukozone_div.css("top"));
     });
     nyarukozone_div.click(function() {
-        nyarukozone_mouseclocation_x = event.offsetX;
-        nyarukozone_mouseclocation_y = event.offsetY;
+        nyarukozone_mouseclocation_x = event.clientX - parseInt(nyarukozone_div.css("left"));
+        nyarukozone_mouseclocation_y = event.clientY - parseInt(nyarukozone_div.css("top"));
+        //模組
+        nyarukozone_rolecol_click();
     });
     $(document).keydown(function(event){
         var ecode = event.keyCode;

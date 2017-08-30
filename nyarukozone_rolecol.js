@@ -7,6 +7,7 @@ var zi = 0;
 var nyarukozone_rolespeed_ani = 10;
 var nyarukozone_rolespeed_anii = 0;
 var nyarukozone_selfmovespeedx = 3;
+var nyarukozone_automove = [];
 // var nyarukozone_selfmovespeed = 1;
 // var nyarukozone_selfmovespeedi = 0;
 
@@ -167,7 +168,7 @@ function nyarukozone_rolemove(nowdiv,key) {
         default:
             break;
     }
-    if (nyarukozone_collider[y] != undefined && nyarukozone_collider[y][x] != undefined && nyarukozone_collider[y][x] == true) {
+    if (nyarukozone_canmoveto(x,y)) {
         nowdiv.attr({"frame":x+"_"+y});
     }
 }
@@ -195,18 +196,26 @@ function nyarukozone_selfroledir() {
         var nowkey = nowkeys[i];
         if (nowkey == 87 || nowkey == 38) {
             nowroledir += "w";
+            nyarukozone_automove.splice(0,nyarukozone_automove.length);
         } else if (nowkey == 83 || nowkey == 40) {
             nowroledir += "s";
+            nyarukozone_automove.splice(0,nyarukozone_automove.length);
         } else if (nowkey == 65 || nowkey == 37) {
             nowroledir += "a";
+            nyarukozone_automove.splice(0,nyarukozone_automove.length);
         } else if (nowkey == 68 || nowkey == 39) {
             nowroledir += "d";
+            nyarukozone_automove.splice(0,nyarukozone_automove.length);
         } else {
             nowroledir = "null";
         }
     }
     if (nowroledir == "ws" || nowroledir == "ad" || nowroledir == "sw" || nowroledir == "da") {
         nowroledir = "null";
+    }
+    if (nyarukozone_automove.length > 0) {
+        nowroledir = nyarukozone_automove[0];
+        nyarukozone_automove.splice(0,1);
     }
     nowroledir = nyarukozone_keysort(nowroledir);
     nyarukozone_rolemove(selfdiv,nowroledir);
@@ -224,4 +233,75 @@ function nyarukozone_keysort(key) {
         return "sd";
     }
     return key;
+}
+
+function nyarukozone_rolecol_click() {
+    nyarukozone_automove.splice(0,nyarukozone_automove.length);
+    var mx = 0 - parseInt(nyarukozone_mapbackgrounds[0].css("left")) + nyarukozone_mouseclocation_x;
+    var my = 0 - parseInt(nyarukozone_mapbackgrounds[0].css("top")) + nyarukozone_mouseclocation_y;
+    if (!nyarukozone_canmoveto(mx,my)) {
+        console.log("目标不可达: "+mx+", "+my);
+        return;
+    }
+    console.log("目标可达: "+mx+", "+my);
+    var roleframe = $("#sprite300000").attr("frame").split('_');
+    var rx = roleframe[0];
+    var ry = roleframe[1];
+    var i = 0;
+    console.log("x|"+rx+"|"+mx);
+    console.log("y|"+ry+"|"+my);
+    var osize = 50;
+    while (i < 1000) {
+        var nowmove = 2;
+        var mv = "";
+        if (my - ry > osize) {
+            ry++;
+            if (!nyarukozone_canmoveto(rx,ry)) {
+                ry--;
+            } else {
+                mv = "s"
+            }
+        } else if (ry - my > osize) {
+            ry--;
+            if (!nyarukozone_canmoveto(rx,ry)) {
+                ry++;
+            } else {
+                mv = "w"
+            }
+        } else {
+            nowmove--;
+        }
+        if (mx - rx > osize) {
+            rx++;
+            if (!nyarukozone_canmoveto(rx,ry)) {
+                rx--;
+            } else {
+                mv += "d"
+            }
+        } else if (rx - mx > osize) {
+            rx--;
+            if (!nyarukozone_canmoveto(rx,ry)) {
+                rx++;
+            } else {
+                mv += "a"
+            }
+        } else {
+            nowmove--;
+        }
+        if (mv != "") {
+            nyarukozone_automove[nyarukozone_automove.length] = mv;
+        }
+        if (nowmove == 0) {
+            break;
+        }
+        i++;
+    }
+    console.log(nyarukozone_automove);
+}
+
+function nyarukozone_canmoveto(x,y) {
+    if (nyarukozone_collider[y] != undefined && nyarukozone_collider[y][x] != undefined && nyarukozone_collider[y][x] == true) {
+        return true;
+    }
+    return false;
 }
