@@ -2,7 +2,7 @@
 //場景控制器
 var nyarukozone_mapbackgrounds = [];
 var nyarukozone_mapprospects = [];
-var nyarukozone_collider = "";
+var nyarukozone_collider = [];
 var nyarukozone_mapimageall = 0;
 var nyarukozone_mapimagearrlen = [0,0];
 var nyarukozone_mapimagecache = [];
@@ -14,7 +14,7 @@ function nyarukozone_resetmap() {
     $(".nyarukozone_map").remove();
     nyarukozone_mapbackgrounds = [];
     nyarukozone_mapprospects = [];
-    nyarukozone_collider = "";
+    nyarukozone_collider = [];
     nyarukozone_mapimageall = 0;
     nyarukozone_mapimagearrlen = [0,0];
     nyarukozone_mapimagecache = [];
@@ -88,12 +88,48 @@ function nyarukozone_loadMapImage3() {
         }
     });
     $.each(nyarukozone_mapbackgrounds, function(i, nimg) {
-        nyarukozone_loadMapImage4(100000+i,nimg);
+        nyarukozone_loadMapImage4(100001+i,nimg);
     });
     $.each(nyarukozone_mapprospects, function(i, nimg) {
         nyarukozone_loadMapImage4(600000+i,nimg);
     });
+    nyarukozone_loadEcollider(nowcollider[0]);
     YSLog("Load Map OK.");
+}
+//轉換碰撞圖片
+function nyarukozone_loadEcollider(nowcolliderimg) {
+    nyarukozone_div.append('<canvas class="nyarukozone_ecollider" id="nyarukozone_ecollider">ERROR</canvas>');
+    var ctxt = nyarukozone_ecollider.getContext('2d');
+    var icollider = new Image;
+    icollider.onload = function(){
+        ctxt.drawImage(icollider, 0, 0);
+        var icolliderwidth = icollider.width;
+        var icolliderheight = icollider.height;
+        var data = ctxt.getImageData(0, 0, icolliderwidth, icolliderheight).data;
+        nyarukozone_collider = [];
+        var widthi = 0;
+        var heighti = 0;
+        var widths = [];
+        for(var i =0,len = data.length; i<len;i+=4){
+            //var red = data[i], green = data[i+1], blue = data[i+2], alpha = data[i+3];
+            var nc = 0;
+            if (data[i+3] > 0) {
+                nc = 1;
+            }
+            widths[widthi] = nc;
+            widthi++;
+            if (widthi >= icolliderwidth) {
+                widthi = 0;
+                nyarukozone_collider[heighti] = widths;
+                widths = [];
+                heighti++;
+            }
+        }
+        $(".nyarukozone_ecollider").remove();
+        icollider = null;
+        ctxt = null;
+    }
+    icollider.src = nowcolliderimg.src;
 }
 //呈現場景
 function nyarukozone_loadMapImage4(z,img) {
