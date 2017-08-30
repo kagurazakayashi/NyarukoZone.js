@@ -106,7 +106,7 @@ function nyarukozone_loadEcollider(nowcolliderimg) {
         var icolliderwidth = icollider.width;
         var icolliderheight = icollider.height;
         var data = ctxt.getImageData(0, 0, icolliderwidth, icolliderheight).data;
-        nyarukozone_collider = [];
+        nyarukozone_collider.splice(0,nyarukozone_collider.length);
         var widthi = 0;
         var heighti = 0;
         var widths = [];

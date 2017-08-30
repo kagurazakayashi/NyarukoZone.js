@@ -234,54 +234,53 @@ function nyarukozone_keysort(key) {
     }
     return key;
 }
-
+//點擊地圖移動角色
 function nyarukozone_rolecol_click() {
+    var selfdiv = $("#sprite300000");
     nyarukozone_automove.splice(0,nyarukozone_automove.length);
     var mx = 0 - parseInt(nyarukozone_mapbackgrounds[0].css("left")) + nyarukozone_mouseclocation_x;
-    var my = 0 - parseInt(nyarukozone_mapbackgrounds[0].css("top")) + nyarukozone_mouseclocation_y;
+    var my = 0 - parseInt(nyarukozone_mapbackgrounds[0].css("top")) + nyarukozone_mouseclocation_y - parseInt(selfdiv.height()*0.5);
     if (!nyarukozone_canmoveto(mx,my)) {
-        console.log("目标不可达: "+mx+", "+my);
         return;
     }
-    console.log("目标可达: "+mx+", "+my);
-    var roleframe = $("#sprite300000").attr("frame").split('_');
-    var rx = roleframe[0];
-    var ry = roleframe[1];
+    var roleframe = selfdiv.attr("frame").split('_');
+    var rx = parseInt(roleframe[0]);
+    var ry = parseInt(roleframe[1]);
     var i = 0;
-    console.log("x|"+rx+"|"+mx);
-    console.log("y|"+ry+"|"+my);
-    var osize = 50;
+    //設定移動補償
+    var osize = nyarukozone_selfmovespeedx;
+    var ospeed = nyarukozone_selfmovespeedx;
     while (i < 1000) {
         var nowmove = 2;
         var mv = "";
-        if (my - ry > osize) {
-            ry++;
+        if (ry < my && (my - ry) > osize) {
+            ry+=ospeed;
             if (!nyarukozone_canmoveto(rx,ry)) {
-                ry--;
+                ry-=ospeed;
             } else {
                 mv = "s"
             }
-        } else if (ry - my > osize) {
-            ry--;
+        } else if (ry > my && (ry - my) > osize) {
+            ry-=ospeed;
             if (!nyarukozone_canmoveto(rx,ry)) {
-                ry++;
+                ry+=ospeed;
             } else {
                 mv = "w"
             }
         } else {
             nowmove--;
         }
-        if (mx - rx > osize) {
-            rx++;
+        if (rx < mx && (mx - rx) > osize) {
+            rx+=ospeed;
             if (!nyarukozone_canmoveto(rx,ry)) {
-                rx--;
+                rx-=ospeed;
             } else {
                 mv += "d"
             }
-        } else if (rx - mx > osize) {
-            rx--;
+        } else if (rx > mx && (rx - mx) > osize) {
+            rx-=ospeed;
             if (!nyarukozone_canmoveto(rx,ry)) {
-                rx++;
+                rx+=ospeed;
             } else {
                 mv += "a"
             }
@@ -296,7 +295,7 @@ function nyarukozone_rolecol_click() {
         }
         i++;
     }
-    console.log(nyarukozone_automove);
+    //console.log(nyarukozone_automove);
 }
 
 function nyarukozone_canmoveto(x,y) {
