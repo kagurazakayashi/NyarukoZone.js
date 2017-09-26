@@ -20,6 +20,8 @@ var nyarukozone_mouseclocation_x = 0;
 var nyarukozone_mouseclocation_y = 0;
 var nyarukozone_keyboard = new Array();
 var nyarukozone_click_delegate = [];
+var nyarukozone_rolespeed_ani = 10;
+var nyarukozone_selfmovespeedx = 3;
 
 //初期化核心程式
 function nyarukozone_init() {
@@ -140,4 +142,31 @@ function nyarukozone_contains(arr, obj) {
     }
   }
   return false;
+}
+//装入公共信息
+function nyarukozone_loadGame(url) {
+    var jsonurl = url + "/index.json";
+    YSLog("Loading: "+jsonurl);
+    try {
+        $.getJSON(jsonurl,function(responseTxt,statusTxt,xhr,data){
+            if(statusTxt == "error") {
+                YSLog("E: Download configuration failed. "+xhr.status+": "+xhr.statusText);
+            }
+            if(statusTxt == "success") {
+                var json = xhr.responseJSON;
+                var info = json["info"];
+                var option = json["option"];
+                var cur = json["cur"];
+                if (info["filevar"] != 1) {
+                    YSLog("E: rolefilevar");
+                    return
+                }
+                nyarukozone_speed = option["fps"];
+                nyarukozone_rolespeed_ani = option["roleanispeed"];
+                nyarukozone_selfmovespeedx = option["selfspeedx"];
+            }
+        });
+    } catch (ex) {
+        YSLog("E: Data loading failed: "+ex);
+    }
 }
