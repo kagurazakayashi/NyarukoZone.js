@@ -5,6 +5,7 @@
 var nyarukozone_speed = 30;
 var nyarukozone_debug = true;
 var nyarukozone_isplay = true;
+var nyarukozone_cur = {};
 
 //不可設定
 var nyarukozone_frametotal = 0;
@@ -22,6 +23,8 @@ var nyarukozone_keyboard = new Array();
 var nyarukozone_click_delegate = [];
 var nyarukozone_rolespeed_ani = 10;
 var nyarukozone_selfmovespeedx = 3;
+var nyarukozone_pubdir = "";
+var nyarukozone_nowcur = 0; //0yes 1no 2busy
 
 //初期化核心程式
 function nyarukozone_init() {
@@ -33,6 +36,8 @@ function nyarukozone_init() {
     nyarukozone_div.mousemove(function(e) {
         nyarukozone_mousemlocation_x = e.clientX - parseInt(nyarukozone_div.css("left"));
         nyarukozone_mousemlocation_y = e.clientY - parseInt(nyarukozone_div.css("top"));
+        //模組
+        nyarukozone_rolecol_mousemove();
     });
     nyarukozone_div.click(function() {
         nyarukozone_mouseclocation_x = event.clientX - parseInt(nyarukozone_div.css("left"));
@@ -145,7 +150,8 @@ function nyarukozone_contains(arr, obj) {
 }
 //装入公共信息
 function nyarukozone_loadGame(url) {
-    var jsonurl = url + "/index.json";
+    nyarukozone_pubdir = url+"/";
+    var jsonurl = nyarukozone_pubdir + "index.json";
     YSLog("Loading: "+jsonurl);
     try {
         $.getJSON(jsonurl,function(responseTxt,statusTxt,xhr,data){
@@ -156,7 +162,6 @@ function nyarukozone_loadGame(url) {
                 var json = xhr.responseJSON;
                 var info = json["info"];
                 var option = json["option"];
-                var cur = json["cur"];
                 if (info["filevar"] != 1) {
                     YSLog("E: rolefilevar");
                     return
@@ -164,6 +169,13 @@ function nyarukozone_loadGame(url) {
                 nyarukozone_speed = option["fps"];
                 nyarukozone_rolespeed_ani = option["roleanispeed"];
                 nyarukozone_selfmovespeedx = option["selfspeedx"];
+                nyarukozone_cur = json["cur"];
+                var curyes = nyarukozone_cur["yes"];
+                if (curyes == "") {
+                    $("#nyarukozone").css("cursor","Default,auto");
+                } else {
+                    $("#nyarukozone").css("cursor","url('"+nyarukozone_pubdir+curyes+"'),auto");
+                }
             }
         });
     } catch (ex) {

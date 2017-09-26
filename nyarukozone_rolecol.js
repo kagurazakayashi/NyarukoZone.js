@@ -234,6 +234,28 @@ function nyarukozone_keysort(key) {
     }
     return key;
 }
+//鼠標移過地圖
+function nyarukozone_rolecol_mousemove() {
+    var selfdiv = $("#sprite300000");
+    if (nyarukozone_mapbackgrounds.length < 1) return;
+    var mx = 0 - parseInt(nyarukozone_mapbackgrounds[0].css("left")) + nyarukozone_mousemlocation_x;
+    var my = 0 - parseInt(nyarukozone_mapbackgrounds[0].css("top")) + nyarukozone_mousemlocation_y - parseInt(selfdiv.height()*0.5);
+    var curyes = "";
+    if (nyarukozone_canmoveto(mx,my)) {
+        if (nyarukozone_nowcur == 0) return;
+        nyarukozone_nowcur = 0;
+        curyes = nyarukozone_cur["yes"];
+    } else {
+        if (nyarukozone_nowcur == 1) return;
+        nyarukozone_nowcur = 1;
+        curyes = nyarukozone_cur["no"];
+    }
+    if (curyes == "") {
+        $("#nyarukozone").css("cursor","Default,auto");
+    } else {
+        $("#nyarukozone").css("cursor","url('"+nyarukozone_pubdir+curyes+"'),auto");
+    }
+}
 //點擊地圖移動角色
 function nyarukozone_rolecol_click() {
     var selfdiv = $("#sprite300000");
