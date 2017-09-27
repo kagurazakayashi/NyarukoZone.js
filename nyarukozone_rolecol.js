@@ -70,9 +70,19 @@ function nyarukozone_addRole(json,css,id,uid) {
     nyarukozone_roledivs[nyarukozone_roledivs.length] = idname;
 }
 
-//角色每幀更新，根據設定的延遲做動畫。
+//角色每幀更新。
 function nyarukozone_frameupdate_role() {
     nyarukozone_selfroledir();
+    var cgoto = null;
+    if ($("#nyarukozone_cgoto").length > 0) {
+        cgoto = $("#nyarukozone_cgoto");
+        cframes = cgoto.attr("cframe").split('_');
+        var cx = parseInt(nyarukozone_mapbackgrounds[0].css("left")) - parseInt(cframes[0]);
+        var cy = parseInt(nyarukozone_mapbackgrounds[0].css("top")) - parseInt(cframes[1]);
+        cgoto.css({"top":cy,"left":cx});
+    }
+    //cframe
+    //根據設定的延遲做動畫
     nyarukozone_rolespeed_anii++;
     if (nyarukozone_rolespeed_anii < nyarukozone_rolespeed_ani) {
         return;
@@ -81,7 +91,18 @@ function nyarukozone_frameupdate_role() {
     for (var i in nyarukozone_roledivs) {
         nyarukozone_newroleclass("#"+nyarukozone_roledivs[i],"");
     }
-    //nyarukozone_keyboard
+    
+    if (cgoto) {
+        var cur = nyarukozone_cur["go"]["cur"];
+        var curanii = parseInt(cgoto.attr("ani"));
+        if (curanii >= cur.length) {
+            cgoto.remove();
+        } else {
+            var cclassname = "nyarukozone_" + nyarukozone_appinfo["id"] + "_" + cur[curanii] + " nyarukozone_" + nyarukozone_appinfo["id"];
+            curanii++;
+            cgoto.attr({"class":cclassname,"ani":curanii});
+        }
+    }
 }
 
 //顯示角色到場景
@@ -107,7 +128,7 @@ function nyarukozone_newroleclass(divid,nowroledir) {
         newani = 0;
     }
     if (nowroledir == "") {
-        var newclass = 'nyarukozone_'+nowid+"_"+nyarukozone_roles[nowuid][nowact+"@1x"][nowdir][newani]+' sprite';
+        var newclass = 'nyarukozone_'+nowid+"_"+nyarukozone_roles[nowuid][nowact+"@1x"][nowdir][newani]+' nyarukozone_'+nowid;
     }
     var newani = nowuid+"_"+nowid+"_"+nowact+"_"+nowdir+"_"+newani;
     var frame = nowdiv.attr("frame").split('_'); //[0,0];
@@ -251,9 +272,9 @@ function nyarukozone_rolecol_mousemove() {
         curyes = nyarukozone_cur["no"];
     }
     if (curyes == "") {
-        $("#nyarukozone").css("cursor","Default,auto");
+        nyarukozone_div.css("cursor","Default,auto");
     } else {
-        $("#nyarukozone").css("cursor","url('"+nyarukozone_pubdir+curyes+"'),auto");
+        nyarukozone_div.css("cursor","url('"+nyarukozone_pubdir+curyes+"'),auto");
     }
 }
 //點擊地圖移動角色
@@ -268,6 +289,13 @@ function nyarukozone_rolecol_click() {
     var roleframe = selfdiv.attr("frame").split('_');
     var rx = parseInt(roleframe[0]);
     var ry = parseInt(roleframe[1]);
+    if ($("#nyarukozone_cgoto")) {
+        $("#nyarukozone_cgoto").remove();
+    }
+    var gotocursize = parseInt(nyarukozone_cur["go"]["size"]);
+    var cx = parseInt(nyarukozone_mapbackgrounds[0].css("left")) - nyarukozone_mouseclocation_x+gotocursize/2;
+    var cy = parseInt(nyarukozone_mapbackgrounds[0].css("top")) - nyarukozone_mouseclocation_y+gotocursize/2;
+    nyarukozone_div.append('<div id="nyarukozone_cgoto" style="top:'+nyarukozone_mouseclocation_y+'px;left:'+nyarukozone_mouseclocation_x+'px;width:'+gotocursize+'px;height:'+gotocursize+'px;z-index:719999;position:absolute;" ani="0" cframe="'+cx+'_'+cy+'"></div>');
     var i = 0;
     //設定移動補償
     var osize = nyarukozone_selfmovespeedx;

@@ -25,6 +25,7 @@ var nyarukozone_rolespeed_ani = 10;
 var nyarukozone_selfmovespeedx = 3;
 var nyarukozone_pubdir = "";
 var nyarukozone_nowcur = 0; //0yes 1no 2busy
+var nyarukozone_appinfo = [];
 
 //初期化核心程式
 function nyarukozone_init() {
@@ -166,16 +167,18 @@ function nyarukozone_loadGame(url) {
                     YSLog("E: rolefilevar");
                     return
                 }
+                nyarukozone_appinfo = info;
                 nyarukozone_speed = option["fps"];
                 nyarukozone_rolespeed_ani = option["roleanispeed"];
                 nyarukozone_selfmovespeedx = option["selfspeedx"];
                 nyarukozone_cur = json["cur"];
                 var curyes = nyarukozone_cur["yes"];
                 if (curyes == "") {
-                    $("#nyarukozone").css("cursor","Default,auto");
+                    nyarukozone_div.css("cursor","Default,auto");
                 } else {
-                    $("#nyarukozone").css("cursor","url('"+nyarukozone_pubdir+curyes+"'),auto");
+                    nyarukozone_div.css("cursor","url('"+nyarukozone_pubdir+curyes+"'),auto");
                 }
+                loadjscssfile(nyarukozone_pubdir+nyarukozone_cur["go"]["css"],"css");
             }
         });
     } catch (ex) {
